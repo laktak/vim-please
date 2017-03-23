@@ -1,0 +1,19 @@
+#!/bin/bash
+
+PORT=${PLEASE_PORT:=4048}
+FILE=$1
+if [ -z $FILE ]; then echo "usage: please FILE"; exit 1; fi
+function open() {
+  echo e:$FILE|nc localhost $PORT -c
+}
+
+open
+if [ $? -ne 0 ]; then
+  if [ -n $TMUX_PANE ]; then
+    tmux new-window "vim -c Please"
+    sleep 1
+    open
+  else
+    echo start \"vim -c Please\" first
+  fi
+fi
